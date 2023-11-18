@@ -2,8 +2,11 @@
 import {
   Controller,
   Post,
+  Get,
   UploadedFile,
   UseInterceptors,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TransactionService } from './transactions.service';
@@ -15,8 +18,18 @@ export class TransactionsController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file) {
-    const fileContent = file.buffer.toString();
-    await this.transactionService.processFile(fileContent);
-    return { message: 'Arquivo enviado e processado com sucesso!' };
+    try {
+      const fileContent = file.buffer.toString();
+      await this.transactionService.processFile(fileContent);
+      return 'File uploaded successfully!';
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('data')
+  async GetData() {
+    const data = await this.transactionService.getData();
+    return data;
   }
 }

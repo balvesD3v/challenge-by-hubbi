@@ -15,16 +15,24 @@ export class TransactionService {
 
       const nomalizedTransactions = await normalizeTransactions(transaction);
 
-      for (let d of nomalizedTransactions) {
+      for (let data of nomalizedTransactions) {
         await this.prismaService.trasaction.create({
-          data: d,
+          data: data,
         });
       }
 
-      console.log('Arquivo processado com sucesso.');
+      return 'File processeced successfully.';
     } catch (error) {
       console.error('Error processing file:', error);
-      throw new Error('Falha ao processar o arquivo.');
+      throw new Error(
+        'Failed to preccess the file. Check the format and try again.',
+      );
     }
+  }
+
+  async getData() {
+    const data = await this.prismaService.trasaction.findMany();
+
+    return data;
   }
 }
