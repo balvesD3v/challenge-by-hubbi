@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 interface Transaction {
   type: number;
   date: string;
@@ -6,7 +7,7 @@ interface Transaction {
   seller: string;
 }
 
-export function parseFileContent(fileContent: string): Transaction[] {
+export async function parseFileContent(fileContent: string) {
   const lines = fileContent.split('\n');
 
   const transactions: Transaction[] = lines.map((line) => {
@@ -19,11 +20,13 @@ export function parseFileContent(fileContent: string): Transaction[] {
     return { type, date, product, value, seller };
   });
 
-  return transactions;
+  return await transactions;
 }
 
-export function normalizeTransactions(transactions: Transaction[]): any[] {
-  return transactions.map((transactions) => {
+export async function normalizeTransactions(
+  transactions: Transaction[],
+): Promise<Transaction[]> {
+  const data = transactions.map((transactions) => {
     const normalizedValue = transactions.value / 100;
 
     return {
@@ -34,4 +37,6 @@ export function normalizeTransactions(transactions: Transaction[]): any[] {
       seller: transactions.seller,
     };
   });
+
+  return data;
 }

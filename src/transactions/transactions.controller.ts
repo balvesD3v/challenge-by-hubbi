@@ -8,7 +8,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TransactionService } from './transactions.service';
 
-@Controller('transictions')
+@Controller('transactions')
 export class TransactionsController {
   constructor(private readonly transactionService: TransactionService) {}
 

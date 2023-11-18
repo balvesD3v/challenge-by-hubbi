@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable prefer-const */
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { normalizeTransactions, parseFileContent } from './transaction.utils';
@@ -9,17 +10,21 @@ export class TransactionService {
 
   async processFile(fileContent: string) {
     try {
-      const transaction = parseFileContent(fileContent);
-      const nomalizedTransactions = normalizeTransactions(transaction);
+      const transaction = await parseFileContent(fileContent);
+      console.log(transaction);
 
-      await this.prismaService.transaction.createMany({
-        data: nomalizedTransactions,
-      });
+      const nomalizedTransactions = await normalizeTransactions(transaction);
+
+      for (let d of nomalizedTransactions) {
+        await this.prismaService.trasaction.create({
+          data: d,
+        });
+      }
 
       console.log('Arquivo processado com sucesso.');
     } catch (error) {
       console.error('Error processing file:', error);
-      throw new Error('Failed to process file.');
+      throw new Error('Falha ao processar o arquivo.');
     }
   }
 }

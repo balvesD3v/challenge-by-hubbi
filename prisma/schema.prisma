@@ -13,7 +13,7 @@ datasource db {
 model Trasaction {
   id Int @id @default(autoincrement())
   type Int
-  date DateTime
+  date String
   product String
   value Int
   seller String
