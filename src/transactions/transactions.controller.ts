@@ -7,6 +7,7 @@ import {
   UseInterceptors,
   HttpException,
   HttpStatus,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TransactionService } from './transactions.service';
@@ -38,5 +39,18 @@ export class TransactionsController {
     const transactionsByAffiliate =
       await this.transactionService.getTransactionsByAffiliate();
     return transactionsByAffiliate;
+  }
+
+  @Delete('delete-data')
+  async deleteData() {
+    try {
+      await this.transactionService.deleteData();
+      return 'Data deleted successfully';
+    } catch (error) {
+      throw new HttpException(
+        'Error deleting data',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

@@ -70,4 +70,8 @@ export class TransactionService {
 
     return transactionsByAffiliate;
   }
+
+  async deleteData() {
+    await this.prismaService.trasaction.deleteMany();
+  }
 }
