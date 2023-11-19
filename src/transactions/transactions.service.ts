@@ -11,9 +11,27 @@ export class TransactionService {
   async processFile(fileContent: string) {
     try {
       const transaction = await parseFileContent(fileContent);
-      console.log(transaction);
-
       const nomalizedTransactions = await normalizeTransactions(transaction);
+
+      const transactionsByAffiliate = nomalizedTransactions.reduce(
+        (acc, transaction) => {
+          const affiliateId = transaction.affiliateId;
+          if (!acc[affiliateId]) {
+            acc[affiliateId] = [];
+          }
+          acc[affiliateId].push(transaction);
+          return acc;
+        },
+        {},
+      );
+
+      for (const affiliateId in transactionsByAffiliate) {
+        const affiliateTransactions = transactionsByAffiliate[affiliateId];
+        console.log(
+          `Transaction for the affiliate ${affiliateId}:`,
+          affiliateTransactions,
+        );
+      }
 
       for (let data of nomalizedTransactions) {
         await this.prismaService.trasaction.create({
@@ -34,5 +52,22 @@ export class TransactionService {
     const data = await this.prismaService.trasaction.findMany();
 
     return data;
+  }
+
+  async getTransactionsByAffiliate(): Promise<any> {
+    const transactions = await this.prismaService.trasaction.findMany();
+
+    const transactionsByAffiliate = transactions.reduce((acc, transaction) => {
+      const affiliateId = transaction.seller;
+
+      if (!acc[affiliateId]) {
+        acc[affiliateId] = [];
+      }
+
+      acc[affiliateId].push(transaction);
+      return acc;
+    }, {});
+
+    return transactionsByAffiliate;
   }
 }

@@ -32,4 +32,11 @@ export class TransactionsController {
     const data = await this.transactionService.getData();
     return data;
   }
+
+  @Get('grouped-by-affiliate')
+  async getTransactionsByAffiliate() {
+    const transactionsByAffiliate =
+      await this.transactionService.getTransactionsByAffiliate();
+    return transactionsByAffiliate;
+  }
 }
